@@ -98,13 +98,12 @@ const checkStatus = () => {
 				secrets = status.secrets;
 				configuration.kit = status.kit;
 				return all([
-					checkActivation( // added kit
+					checkActivation(
 						status.name,
 						status.url,
 						status.activation_code,
 						status.kit_version,
-						status.constants,
-						status.kit
+						status.constants
 					),
 					Tier.findAll(),
 					status.dataValues
@@ -135,15 +134,19 @@ const checkStatus = () => {
 						taker: {}
 					};
 
+					const defaultFees = exchange.type === 'Enterprise'
+						? { maker: 0, taker: 0 }
+						: DEFAULT_FEES[exchange.collateral_level];
+
 					for (let pair of exchangePairs) {
 						if (!isNumber(tier.fees.maker[pair])) {
-							fees.maker[pair] = DEFAULT_FEES[exchange.collateral_level].maker;
+							fees.maker[pair] = defaultFees.maker;
 						} else {
 							fees.maker[pair] = tier.fees.maker[pair];
 						}
 
 						if (!isNumber(tier.fees.taker[pair])) {
-							fees.taker[pair] = DEFAULT_FEES[exchange.collateral_level].taker;
+							fees.taker[pair] = defaultFees.taker;
 						} else {
 							fees.taker[pair] = tier.fees.taker[pair];
 						}
@@ -179,7 +182,8 @@ const checkStatus = () => {
 				apiKey: status.api_key,
 				apiSecret: status.api_secret,
 				exchange_id: exchange.id,
-				activation_code: exchange.activation_code
+				activation_code: exchange.activation_code,
+				kit_version: status.kit_version
 			});
 
 			if (!networkNodeLib) {
