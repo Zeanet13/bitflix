@@ -1,6 +1,6 @@
 'use strict';
 
-const { Network } = require('hollaex-node-lib');
+const Network = require('./utils/nodeLib');
 const { all } = require('bluebird');
 const rp = require('request-promise');
 const { loggerInit } = require('./config/logger');
@@ -164,6 +164,7 @@ const checkStatus = () => {
 				name: exchange.name,
 				active: exchange.active,
 				exchange_id: exchange.id,
+				user_id: exchange.user_id,
 				url: exchange.url,
 				is_trial: exchange.is_trial,
 				created_at: exchange.created_at,
